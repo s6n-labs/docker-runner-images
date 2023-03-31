@@ -20,6 +20,7 @@ jobs:
           - ubuntu-22.04
         variant:
           - minimal
+          - standard
     steps:
       - uses: actions/checkout@v3
 
