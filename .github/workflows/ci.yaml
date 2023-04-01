@@ -18,9 +18,6 @@ jobs:
       matrix:
         os:
           - ubuntu-22.04
-        variant:
-          - minimal
-          - standard
     steps:
       - uses: actions/checkout@v3
 
@@ -36,16 +33,30 @@ jobs:
 
       - run: ls -al
 
-      - name: Build and push
+      - name: Build and push (minimal)
         uses: docker/build-push-action@v4
         with:
           push: true
           context: '.'
-          file: './${{ matrix.os }}/${{ matrix.variant }}/Dockerfile'
+          file: './${{ matrix.os }}/minimal/Dockerfile'
           cache-from: type=gha
           cache-to: type=gha,mode=max
           platforms: linux/arm64
           tags: |
-            ghcr.io/s6n-jp/docker-runner-images:${{ matrix.os }}-${{ matrix.variant }}-${{ steps.shorter_hash.outputs.hash }}
-            ghcr.io/s6n-jp/docker-runner-images:${{ matrix.os }}-${{ matrix.variant }}-${{ github.event.release.tag_name || 'latest' }}
-            ghcr.io/s6n-jp/docker-runner-images:${{ matrix.os }}-${{ matrix.variant }}
+            ghcr.io/s6n-jp/docker-runner-images:${{ matrix.os }}-minimal-${{ steps.shorter_hash.outputs.hash }}
+            ghcr.io/s6n-jp/docker-runner-images:${{ matrix.os }}-minimal-${{ github.event.release.tag_name || 'latest' }}
+            ghcr.io/s6n-jp/docker-runner-images:${{ matrix.os }}-minimal
+
+      - name: Build and push (standard)
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          context: '.'
+          file: './${{ matrix.os }}/standard/Dockerfile'
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: linux/arm64
+          tags: |
+            ghcr.io/s6n-jp/docker-runner-images:${{ matrix.os }}-standard-${{ steps.shorter_hash.outputs.hash }}
+            ghcr.io/s6n-jp/docker-runner-images:${{ matrix.os }}-standard-${{ github.event.release.tag_name || 'latest' }}
+            ghcr.io/s6n-jp/docker-runner-images:${{ matrix.os }}-standard
