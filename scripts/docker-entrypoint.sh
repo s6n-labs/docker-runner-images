@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 
-./config.sh $@
+./config.sh --unattended $@
 ./run.sh

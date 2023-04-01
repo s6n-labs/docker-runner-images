@@ -16,3 +16,5 @@ USER runner
 COPY ./scripts /tmp/scripts
 RUN /tmp/scripts/install-actions-runner.sh && \
     sudo cp /tmp/scripts/docker-entrypoint.sh /docker-entrypoint.sh
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
