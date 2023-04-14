@@ -1,4 +1,4 @@
-FROM ghcr.io/s6n-jp/docker-runner-images:ubuntu-22.04-standard
+FROM ghcr.io/s6n-jp/docker-runner-images:ubuntu-22.10-standard
 
 USER root
 
