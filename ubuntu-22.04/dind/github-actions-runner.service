@@ -1,6 +1,6 @@
 [Unit]
 Description=GitHub Actions Self-Hosted Runner
-After=network-online.target
+After=network-online.target enable-docker-access.service
 
 [Service]
 Type=simple

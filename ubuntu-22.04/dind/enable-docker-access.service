@@ -1,0 +1,10 @@
+[Unit]
+Description=Enable Docker Access for Runner User
+After=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/enable-docker-access.sh
+
+[Install]
+WantedBy=multi-user.target
