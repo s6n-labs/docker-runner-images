@@ -2,6 +2,7 @@
 
 set -eux
 
+sed -i 's/#Storage=auto/Storage=persistent/' /etc/systemd/journald.conf
 sudo -u runner ./config.sh --unattended $@
-exec /sbin/init &
-cat /var/log/syslog
+journalctl -f &
+exec /sbin/init
