@@ -16,6 +16,8 @@ RUN echo \
 RUN apt-get -y update && \
     apt-get -y install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
+RUN usermod -aG docker runner
+
 COPY ./ubuntu-22.04/dind/github-actions-runner.service /etc/systemd/system/github-actions-runner.service
 RUN ln -s /etc/systemd/system/github-actions-runner.service \
     /etc/systemd/system/multi-user.target.wants/github-actions-runner.service
