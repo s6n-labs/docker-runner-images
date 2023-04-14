@@ -29,10 +29,10 @@ RUN --mount=type=cache,target=/var/cache/apt \
     sudo npm install -g npm pnpm && \
     corepack prepare yarn@stable --activate
 
-# PHP
-RUN --mount=type=cache,target=/var/cache/apt \
-    sudo add-apt-repository ppa:ondrej/php && \
-    sudo apt-get -y update && sudo -E apt-get -y install php8.2-fpm
+# PHP: ondrej/php does not support kinetic yet
+# RUN --mount=type=cache,target=/var/cache/apt \
+#     sudo add-apt-repository ppa:ondrej/php && \
+#     sudo apt-get -y update && sudo -E apt-get -y install php8.2-fpm
 
 # Python
 RUN --mount=type=cache,target=/var/cache/apt \
