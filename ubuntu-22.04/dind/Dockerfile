@@ -2,7 +2,8 @@ FROM ghcr.io/s6n-jp/docker-runner-images:ubuntu-22.04-standard
 
 USER root
 
-RUN apt-get -y update && apt-get -y install ca-certificates curl gnupg init systemd
+RUN --mount=type=cache,target=/var/cache/apt \
+    apt-get -y update && apt-get -y install ca-certificates curl gnupg init systemd
 
 RUN install -m 0755 -d /etc/apt/keyrings && \
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg && \
@@ -13,7 +14,8 @@ RUN echo \
     "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
     tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-RUN apt-get -y update && \
+RUN --mount=type=cache,target=/var/cache/apt \
+    apt-get -y update && \
     apt-get -y install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
 COPY ./systemd/enable-docker-access.service /etc/systemd/system/enable-docker-access.service

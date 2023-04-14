@@ -5,7 +5,7 @@ ARG ACTIONS_RUNNER_VERSION="2.303.0"
 ENV DEBIAN_FRONTEND="noninteractive"
 
 # Minimal Dependencies
-RUN apt-get -y update && apt-get -yq install curl git sudo
+RUN --mount=type=cache,target=/var/cache/apt apt-get -y update && apt-get -yq install curl git sudo
 RUN sed -i 's/%sudo	ALL=(ALL:ALL) ALL/%sudo	ALL=NOPASSWD: ALL/' /etc/sudoers
 RUN useradd -m -U -G sudo runner
 
