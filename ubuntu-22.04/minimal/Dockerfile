@@ -1,8 +1,12 @@
 FROM ubuntu:jammy-20230308
 
+ARG APT_UBUNTU_MIRROR="http://ports.ubuntu.com/ubuntu-ports/"
 ARG ACTIONS_RUNNER_VERSION="2.303.0"
 
 ENV DEBIAN_FRONTEND="noninteractive"
+
+RUN --mount=type=cache,target=/var/cache/apt apt-get -y update && apt-get -y install ca-certificates
+RUN sed -i "s http://ports.ubuntu.com/ubuntu-ports/ ${APT_UBUNTU_MIRROR} g" /etc/apt/sources.list
 
 # Minimal Dependencies
 RUN --mount=type=cache,target=/var/cache/apt apt-get -y update && apt-get -yq install curl git sudo

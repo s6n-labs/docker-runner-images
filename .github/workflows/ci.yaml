@@ -8,6 +8,9 @@ on:
     types:
       - published
 
+env:
+  APT_UBUNTU_MIRROR: 'https://mirror.nishi.network/ubuntu-ports/'
+
 jobs:
   build:
     runs-on: [self-hosted, Linux, ARM64]
@@ -40,6 +43,7 @@ jobs:
           push: true
           context: '.'
           file: './${{ matrix.os }}/minimal/Dockerfile'
+          build-args: 'APT_UBUNTU_MIRROR=${{ env.APT_UBUNTU_MIRROR }}'
           cache-from: type=gha
           cache-to: type=gha,mode=max
           platforms: linux/arm64
@@ -54,6 +58,7 @@ jobs:
           push: true
           context: '.'
           file: './${{ matrix.os }}/standard/Dockerfile'
+          build-args: 'APT_UBUNTU_MIRROR=${{ env.APT_UBUNTU_MIRROR }}'
           cache-from: type=gha
           cache-to: type=gha,mode=max
           platforms: linux/arm64
@@ -68,6 +73,7 @@ jobs:
           push: true
           context: '.'
           file: './${{ matrix.os }}/dind/Dockerfile'
+          build-args: 'APT_UBUNTU_MIRROR=${{ env.APT_UBUNTU_MIRROR }}'
           cache-from: type=gha
           cache-to: type=gha,mode=max
           platforms: linux/arm64
