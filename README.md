@@ -35,3 +35,12 @@ GitHub Actions Runner and their dependencies only
   - jq
   - software-properties-common (for add-apt-repository)
   - wget
+
+
+#### DinD
+
+- systemd
+- Docker
+  - Docker Engine
+  - Docker CLI
+  - Docker Compose Plugin
