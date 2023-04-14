@@ -1,0 +1,14 @@
+[Unit]
+Description=GitHub Actions Self-Hosted Runner
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/actions-runner/run.sh
+WorkingDirectory=/actions-runner
+Restart=always
+User=runner
+Group=runner
+
+[Install]
+WantedBy=multi-user.target

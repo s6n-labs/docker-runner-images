@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+set -eux
+
 ARCH="$(uname -m)"
 
 if [ $ARCH = "aarch64" ]; then

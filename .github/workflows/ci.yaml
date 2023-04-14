@@ -60,3 +60,17 @@ jobs:
             ghcr.io/s6n-jp/docker-runner-images:${{ matrix.os }}-standard-${{ steps.shorter_hash.outputs.hash }}
             ghcr.io/s6n-jp/docker-runner-images:${{ matrix.os }}-standard-${{ github.event.release.tag_name || 'latest' }}
             ghcr.io/s6n-jp/docker-runner-images:${{ matrix.os }}-standard
+
+      - name: Build and push (dind)
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          context: '.'
+          file: './${{ matrix.os }}/dind/Dockerfile'
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: linux/arm64
+          tags: |
+            ghcr.io/s6n-jp/docker-runner-images:${{ matrix.os }}-dind-${{ steps.shorter_hash.outputs.hash }}
+            ghcr.io/s6n-jp/docker-runner-images:${{ matrix.os }}-dind-${{ github.event.release.tag_name || 'latest' }}
+            ghcr.io/s6n-jp/docker-runner-images:${{ matrix.os }}-dind
