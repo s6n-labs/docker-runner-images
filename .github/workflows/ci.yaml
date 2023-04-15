@@ -62,6 +62,7 @@ jobs:
             ${{ env.REPOSITORY }}:${{ matrix.os }}-minimal-${{ steps.shorter_hash.outputs.hash }}-${{ matrix.suffix }}
             ${{ env.REPOSITORY }}:${{ matrix.os }}-minimal-${{ github.event.release.tag_name || 'latest' }}-${{ matrix.suffix }}
             ${{ env.REPOSITORY }}:${{ matrix.os }}-minimal-${{ matrix.suffix }}
+            ${{ env.REPOSITORY }}:${{ matrix.os }}-minimal
 
       - name: Build (standard)
         uses: docker/build-push-action@v4
@@ -77,6 +78,7 @@ jobs:
             ${{ env.REPOSITORY }}:${{ matrix.os }}-standard-${{ steps.shorter_hash.outputs.hash }}-${{ matrix.suffix }}
             ${{ env.REPOSITORY }}:${{ matrix.os }}-standard-${{ github.event.release.tag_name || 'latest' }}-${{ matrix.suffix }}
             ${{ env.REPOSITORY }}:${{ matrix.os }}-standard-${{ matrix.suffix }}
+            ${{ env.REPOSITORY }}:${{ matrix.os }}-standard
 
       - name: Build (dind)
         uses: docker/build-push-action@v4
