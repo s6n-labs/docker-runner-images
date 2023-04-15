@@ -9,11 +9,11 @@ on:
       - published
 
 env:
+  REPOSITORY: 'ghcr.io/s6n-jp/docker-runner-images'
   APT_UBUNTU_MIRROR: 'https://mirror.nishi.network/ubuntu-ports/'
 
 jobs:
   build:
-    runs-on: [self-hosted, Linux, ARM64]
     permissions:
       contents: read
       packages: write
@@ -22,6 +22,17 @@ jobs:
         os:
           - ubuntu-22.04
           - ubuntu-22.10
+        architecture:
+          - X64
+          - ARM64
+        include:
+          - architecture: X64
+            platforms: linux/amd64
+            suffix: amd64
+          - architecture: ARM64
+            platforms: linux/arm64
+            suffix: arm64
+    runs-on: [self-hosted, Linux, '${{ matrix.architecture }}']
     steps:
       - uses: actions/checkout@v3
 
@@ -46,11 +57,11 @@ jobs:
           build-args: 'APT_UBUNTU_MIRROR=${{ env.APT_UBUNTU_MIRROR }}'
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          platforms: linux/arm64
+          platforms: ${{ matrix.platforms }}
           tags: |
-            ghcr.io/s6n-jp/docker-runner-images:${{ matrix.os }}-minimal-${{ steps.shorter_hash.outputs.hash }}
-            ghcr.io/s6n-jp/docker-runner-images:${{ matrix.os }}-minimal-${{ github.event.release.tag_name || 'latest' }}
-            ghcr.io/s6n-jp/docker-runner-images:${{ matrix.os }}-minimal
+            ${{ env.REPOSITORY }}:${{ matrix.os }}-minimal-${{ steps.shorter_hash.outputs.hash }}-${{ matrix.suffix }}
+            ${{ env.REPOSITORY }}:${{ matrix.os }}-minimal-${{ github.event.release.tag_name || 'latest' }}-${{ matrix.suffix }}
+            ${{ env.REPOSITORY }}:${{ matrix.os }}-minimal-${{ matrix.suffix }}
 
       - name: Build and push (standard)
         uses: docker/build-push-action@v4
@@ -61,11 +72,11 @@ jobs:
           build-args: 'APT_UBUNTU_MIRROR=${{ env.APT_UBUNTU_MIRROR }}'
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          platforms: linux/arm64
+          platforms: ${{ matrix.platforms }}
           tags: |
-            ghcr.io/s6n-jp/docker-runner-images:${{ matrix.os }}-standard-${{ steps.shorter_hash.outputs.hash }}
-            ghcr.io/s6n-jp/docker-runner-images:${{ matrix.os }}-standard-${{ github.event.release.tag_name || 'latest' }}
-            ghcr.io/s6n-jp/docker-runner-images:${{ matrix.os }}-standard
+            ${{ env.REPOSITORY }}:${{ matrix.os }}-standard-${{ steps.shorter_hash.outputs.hash }}-${{ matrix.suffix }}
+            ${{ env.REPOSITORY }}:${{ matrix.os }}-standard-${{ github.event.release.tag_name || 'latest' }}-${{ matrix.suffix }}
+            ${{ env.REPOSITORY }}:${{ matrix.os }}-standard-${{ matrix.suffix }}
 
       - name: Build and push (dind)
         uses: docker/build-push-action@v4
@@ -76,8 +87,43 @@ jobs:
           build-args: 'APT_UBUNTU_MIRROR=${{ env.APT_UBUNTU_MIRROR }}'
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          platforms: linux/arm64
+          platforms: ${{ matrix.platforms }}
           tags: |
-            ghcr.io/s6n-jp/docker-runner-images:${{ matrix.os }}-dind-${{ steps.shorter_hash.outputs.hash }}
-            ghcr.io/s6n-jp/docker-runner-images:${{ matrix.os }}-dind-${{ github.event.release.tag_name || 'latest' }}
-            ghcr.io/s6n-jp/docker-runner-images:${{ matrix.os }}-dind
+            ${{ env.REPOSITORY }}:${{ matrix.os }}-dind-${{ steps.shorter_hash.outputs.hash }}-${{ matrix.suffix }}
+            ${{ env.REPOSITORY }}:${{ matrix.os }}-dind-${{ github.event.release.tag_name || 'latest' }}-${{ matrix.suffix }}
+            ${{ env.REPOSITORY }}:${{ matrix.os }}-dind-${{ matrix.suffix }}
+    outputs:
+      shorter_hash: '${{ steps.shorter_hash.outputs.hash }}'
+
+  combine:
+    needs:
+      - build
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      matrix:
+        os:
+          - ubuntu-22.04
+          - ubuntu-22.10
+        variant:
+          - minimal
+          - standard
+          - dind
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Log in to GHCR
+        run: echo "${{ github.token }}" | docker login ghcr.io -u $ --password-stdin
+
+      - name: Determine the prefix of tags
+        id: tag_prefix
+        run: |
+          echo "commitish=${REPOSITORY}:${{ matrix.os }}-${{ matrix.variant }}-${{ needs.build.outputs.shorter_hash }}" >> "${GITHUB_OUTPUT}"
+          echo "versioned=${REPOSITORY}:${{ matrix.os }}-${{ matrix.variant }}-${{ github.event.release.tag_name || 'latest' }}" >> "${GITHUB_OUTPUT}"
+
+      - name: Create and push multi-arch image manifests
+        run: |
+          for TAG in '${{ steps.tag_prefix.outputs.commitish }}' '${{ steps.tag_prefix.outputs.versioned }}'; do
+            docker manifest create "${TAG}" --amend "${TAG}-amd64" --amend "${TAG}-arm64"
+            docker manifest push "${TAG}"
+          done
