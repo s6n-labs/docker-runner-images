@@ -57,8 +57,6 @@ jobs:
           context: '.'
           file: './${{ matrix.os }}/minimal/Dockerfile'
           build-args: 'APT_UBUNTU_MIRROR=${{ env.APT_UBUNTU_MIRROR }}'
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
           platforms: ${{ matrix.platforms }}
           tags: |
             ${{ env.REPOSITORY }}:${{ matrix.os }}-minimal-${{ steps.shorter_hash.outputs.hash }}-${{ matrix.suffix }}
@@ -73,8 +71,6 @@ jobs:
           context: '.'
           file: './${{ matrix.os }}/standard/Dockerfile'
           build-args: 'APT_UBUNTU_MIRROR=${{ env.APT_UBUNTU_MIRROR }}'
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
           platforms: ${{ matrix.platforms }}
           tags: |
             ${{ env.REPOSITORY }}:${{ matrix.os }}-standard-${{ steps.shorter_hash.outputs.hash }}-${{ matrix.suffix }}
@@ -89,8 +85,6 @@ jobs:
           context: '.'
           file: './${{ matrix.os }}/dind/Dockerfile'
           build-args: 'APT_UBUNTU_MIRROR=${{ env.APT_UBUNTU_MIRROR }}'
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
           platforms: ${{ matrix.platforms }}
           tags: |
             ${{ env.REPOSITORY }}:${{ matrix.os }}-dind-${{ steps.shorter_hash.outputs.hash }}-${{ matrix.suffix }}
