@@ -94,9 +94,9 @@ jobs:
       - name: Push
         run: |
           for VARIANT in 'minimal' 'standard' 'dind'; do
-            docker push '${REPOSITORY}:${{ matrix.os }}-${VARIANT}-${{ steps.shorter_hash.outputs.hash }}-${{ matrix.suffix }}'
-            docker push '${REPOSITORY}:${{ matrix.os }}-${VARIANT}-${{ github.event.release.tag_name || 'latest' }}-${{ matrix.suffix }}'
-            docker push '${REPOSITORY}:${{ matrix.os }}-${VARIANT}-${{ matrix.suffix }}'
+            docker push "${REPOSITORY}:${{ matrix.os }}-${VARIANT}-${{ steps.shorter_hash.outputs.hash }}-${{ matrix.suffix }}"
+            docker push "${REPOSITORY}:${{ matrix.os }}-${VARIANT}-${{ github.event.release.tag_name || 'latest' }}-${{ matrix.suffix }}"
+            docker push "${REPOSITORY}:${{ matrix.os }}-${VARIANT}-${{ matrix.suffix }}"
           done
     outputs:
       shorter_hash: '${{ steps.shorter_hash.outputs.hash }}'
