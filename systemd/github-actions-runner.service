@@ -6,7 +6,6 @@ After=network-online.target enable-docker-access.service
 Type=simple
 ExecStart=/actions-runner/run.sh
 WorkingDirectory=/actions-runner
-Restart=always
 User=runner
 Group=runner
 
