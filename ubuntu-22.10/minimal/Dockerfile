@@ -3,13 +3,11 @@ FROM ubuntu:kinetic-20230308
 ARG APT_UBUNTU_MIRROR="http://ports.ubuntu.com/ubuntu-ports/"
 ARG ACTIONS_RUNNER_VERSION="2.303.0"
 
-ENV DEBIAN_FRONTEND="noninteractive"
-
-RUN --mount=type=cache,target=/var/cache/apt apt-get -y update && apt-get -y install ca-certificates
+RUN apt-get -y update && apt-get -y install ca-certificates
 RUN sed -i "s http://ports.ubuntu.com/ubuntu-ports/ ${APT_UBUNTU_MIRROR} g" /etc/apt/sources.list
 
 # Minimal Dependencies
-RUN --mount=type=cache,target=/var/cache/apt apt-get -y update && apt-get -yq install curl git sudo
+RUN apt-get -y update && apt-get -yq install curl git sudo
 RUN sed -i 's/%sudo	ALL=(ALL:ALL) ALL/%sudo	ALL=NOPASSWD: ALL/' /etc/sudoers
 RUN useradd -m -U -G sudo runner
 
