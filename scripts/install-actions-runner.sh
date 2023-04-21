@@ -21,4 +21,6 @@ curl -L -o actions-runner.tar.gz \
 echo "${ARCHIVE_CHECKSUM}  actions-runner.tar.gz" | shasum -a 256 -c
 
 tar xzf ./actions-runner.tar.gz
+rm -f ./actions-runner.tar.gz
+
 sudo ./bin/installdependencies.sh

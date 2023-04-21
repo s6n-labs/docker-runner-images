@@ -3,7 +3,8 @@ FROM ghcr.io/s6n-jp/docker-runner-images:ubuntu-22.10-minimal
 USER root
 
 # PPA repositories
-RUN apt-get -y update && apt-get -y install software-properties-common
+RUN apt-get -y update && apt-get -y install software-properties-common && \
+    add-apt-repository ppa:longsleep/golang-backports
     # PHP: ondrej/php does not support kinetic yet
     # add-apt-repository ppa:ondrej/php
 
@@ -16,16 +17,13 @@ RUN echo "deb [signed-by=/etc/apt/keyrings/adoptium.asc] https://packages.adopti
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
 
 # APT packages
-RUN DEBIAN_FRONTEND="noninteractive" apt-get -y update && \
-    apt-get -y install \
+RUN apt-get -y update && \
+    DEBIAN_FRONTEND="noninteractive" apt-get -y install \
         autoconf automake build-essential cmake jq wget \
-        nodejs temurin-17-jdk \
+        golang-go nodejs \
         python3 python3-pip python3-venv
         # PHP: ondrej/php does not support kinetic yet
         # php8.2-fpm
-
-# Go
-RUN curl -LO https://get.golang.org/$(uname)/go_installer && chmod +x go_installer && ./go_installer && rm go_installer
 
 # .NET
 RUN wget https://dot.net/v1/dotnet-install.sh -O /tmp/dotnet-install.sh && \
