@@ -10,7 +10,7 @@ on:
 
 env:
   REPOSITORY: 'ghcr.io/s6n-jp/docker-runner-images'
-  APT_UBUNTU_MIRROR: 'https://mirror.nishi.network/ubuntu-ports/'
+  APT_UBUNTU_MIRROR: 'http://jp.ports.ubuntu.com/ubuntu-ports/'
 
 jobs:
   build:
