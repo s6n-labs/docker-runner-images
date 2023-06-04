@@ -9,7 +9,7 @@ on:
       - published
 
 env:
-  REPOSITORY: 'ghcr.io/s6n-jp/docker-runner-images'
+  REPOSITORY: 'ghcr.io/s6n-labs/docker-runner-images'
   APT_UBUNTU_MIRROR: 'http://jp.ports.ubuntu.com/ubuntu-ports/'
 
 jobs:
