@@ -49,45 +49,43 @@ jobs:
         run: echo "hash=$(echo ${GITHUB_SHA} | cut -c1-7)" >> ${GITHUB_OUTPUT}
 
       - name: Build (minimal)
-        run: |
-          docker build  \
-            --file './${{ matrix.os }}/Dockerfile' \
-            --target 'minimal' \
-            --build-arg 'APT_UBUNTU_MIRROR=${{ env.APT_UBUNTU_MIRROR }}' \
-            -t ${{ env.REPOSITORY }}:${{ matrix.os }}-minimal-${{ steps.shorter_hash.outputs.hash }}-${{ matrix.suffix }} \
-            -t ${{ env.REPOSITORY }}:${{ matrix.os }}-minimal-${{ github.event.release.tag_name || 'latest' }}-${{ matrix.suffix }} \
-            -t ${{ env.REPOSITORY }}:${{ matrix.os }}-minimal-${{ matrix.suffix }} \
-            .
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          provenance: false
+          file: './${{ matrix.os }}/Dockerfile'
+          target: 'minimal'
+          build-args: 'APT_UBUNTU_MIRROR=${{ env.APT_UBUNTU_MIRROR }}'
+          tags: |
+            ${{ env.REPOSITORY }}:${{ matrix.os }}-minimal-${{ steps.shorter_hash.outputs.hash }}-${{ matrix.suffix }}
+            ${{ env.REPOSITORY }}:${{ matrix.os }}-minimal-${{ github.event.release.tag_name || 'latest' }}-${{ matrix.suffix }}
+            ${{ env.REPOSITORY }}:${{ matrix.os }}-minimal-${{ matrix.suffix }}
 
       - name: Build (standard)
-        run: |
-          docker build  \
-            --file './${{ matrix.os }}/Dockerfile' \
-            --target 'standard' \
-            --build-arg 'APT_UBUNTU_MIRROR=${{ env.APT_UBUNTU_MIRROR }}' \
-            -t ${{ env.REPOSITORY }}:${{ matrix.os }}-standard-${{ steps.shorter_hash.outputs.hash }}-${{ matrix.suffix }} \
-            -t ${{ env.REPOSITORY }}:${{ matrix.os }}-standard-${{ github.event.release.tag_name || 'latest' }}-${{ matrix.suffix }} \
-            -t ${{ env.REPOSITORY }}:${{ matrix.os }}-standard-${{ matrix.suffix }} \
-            .
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          provenance: false
+          file: './${{ matrix.os }}/Dockerfile'
+          target: 'standard'
+          build-args: 'APT_UBUNTU_MIRROR=${{ env.APT_UBUNTU_MIRROR }}'
+          tags: |
+            ${{ env.REPOSITORY }}:${{ matrix.os }}-standard-${{ steps.shorter_hash.outputs.hash }}-${{ matrix.suffix }}
+            ${{ env.REPOSITORY }}:${{ matrix.os }}-standard-${{ github.event.release.tag_name || 'latest' }}-${{ matrix.suffix }}
+            ${{ env.REPOSITORY }}:${{ matrix.os }}-standard-${{ matrix.suffix }}
 
       - name: Build (dind)
-        run: |
-          docker build  \
-            --file './${{ matrix.os }}/Dockerfile' \
-            --target 'dind' \
-            --build-arg 'APT_UBUNTU_MIRROR=${{ env.APT_UBUNTU_MIRROR }}' \
-            -t ${{ env.REPOSITORY }}:${{ matrix.os }}-dind-${{ steps.shorter_hash.outputs.hash }}-${{ matrix.suffix }} \
-            -t ${{ env.REPOSITORY }}:${{ matrix.os }}-dind-${{ github.event.release.tag_name || 'latest' }}-${{ matrix.suffix }} \
-            -t ${{ env.REPOSITORY }}:${{ matrix.os }}-dind-${{ matrix.suffix }} \
-            .
-
-      - name: Push
-        run: |
-          for VARIANT in 'minimal' 'standard' 'dind'; do
-            docker push "${REPOSITORY}:${{ matrix.os }}-${VARIANT}-${{ steps.shorter_hash.outputs.hash }}-${{ matrix.suffix }}"
-            docker push "${REPOSITORY}:${{ matrix.os }}-${VARIANT}-${{ github.event.release.tag_name || 'latest' }}-${{ matrix.suffix }}"
-            docker push "${REPOSITORY}:${{ matrix.os }}-${VARIANT}-${{ matrix.suffix }}"
-          done
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          provenance: false
+          file: './${{ matrix.os }}/Dockerfile'
+          target: 'dind'
+          build-args: 'APT_UBUNTU_MIRROR=${{ env.APT_UBUNTU_MIRROR }}'
+          tags: |
+            ${{ env.REPOSITORY }}:${{ matrix.os }}-dind-${{ steps.shorter_hash.outputs.hash }}-${{ matrix.suffix }}
+            ${{ env.REPOSITORY }}:${{ matrix.os }}-dind-${{ github.event.release.tag_name || 'latest' }}-${{ matrix.suffix }}
+            ${{ env.REPOSITORY }}:${{ matrix.os }}-dind-${{ matrix.suffix }}
     outputs:
       shorter_hash: '${{ steps.shorter_hash.outputs.hash }}'
 
