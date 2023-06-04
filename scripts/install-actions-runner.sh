@@ -6,10 +6,10 @@ ARCH="$(uname -m)"
 
 if [ $ARCH = "aarch64" ]; then
     ARCH_SHORT="arm64"
-    ARCHIVE_CHECKSUM="53f137fb4c00ac9906cbdf4b7c5c14e2e9555a2843d5c0171f6368207472464d"
+    ARCHIVE_CHECKSUM="34c49bd0e294abce6e4a073627ed60dc2f31eee970c13d389b704697724b31c6"
 elif [ $ARCH = "x86_64" ]; then
     ARCH_SHORT="x64"
-    ARCHIVE_CHECKSUM="e4a9fb7269c1a156eb5d5369232d0cd62e06bec2fd2b321600e85ac914a9cc73"
+    ARCHIVE_CHECKSUM="292e8770bdeafca135c2c06cd5426f9dda49a775568f45fcc25cc2b576afc12f"
 else
     echo "This platform is not supported."
     exit 1
