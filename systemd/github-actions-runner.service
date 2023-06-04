@@ -4,11 +4,9 @@ After=network-online.target enable-docker-access.service
 
 [Service]
 Type=simple
-ExecStart=/actions-runner/run.sh
-ExecStartPost=/bin/systemctl halt
+ExecStart=/bin/sudo -u runner /actions-runner/run.sh
+ExecStopPost=/bin/systemctl poweroff
 WorkingDirectory=/actions-runner
-User=runner
-Group=runner
 
 [Install]
 WantedBy=multi-user.target
