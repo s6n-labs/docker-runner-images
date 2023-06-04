@@ -24,11 +24,17 @@ jobs:
           - ubuntu-22.10
         architecture:
           - ARM64
+          - X64
         include:
           - architecture: ARM64
-            platforms: linux/arm64
+            platforms: linux/arm64/v8
+            runner: '["self-hosted", "Linux", "ARM64"]'
             suffix: arm64
-    runs-on: [self-hosted, Linux, '${{ matrix.architecture }}']
+          - architecture: X64
+            platforms: linux/amd64
+            runner: '"ubuntu-22.04"'
+            suffix: amd64
+    runs-on: ${{ fromJSON(matrix.runner) }}
     steps:
       - uses: actions/checkout@v3
 
@@ -42,34 +48,34 @@ jobs:
       - name: Build (minimal)
         run: |
           docker build  \
-            --file './${{ matrix.os }}/minimal/Dockerfile' \
+            --file './${{ matrix.os }}/Dockerfile' \
+            --target 'minimal' \
             --build-arg 'APT_UBUNTU_MIRROR=${{ env.APT_UBUNTU_MIRROR }}' \
             -t ${{ env.REPOSITORY }}:${{ matrix.os }}-minimal-${{ steps.shorter_hash.outputs.hash }}-${{ matrix.suffix }} \
             -t ${{ env.REPOSITORY }}:${{ matrix.os }}-minimal-${{ github.event.release.tag_name || 'latest' }}-${{ matrix.suffix }} \
             -t ${{ env.REPOSITORY }}:${{ matrix.os }}-minimal-${{ matrix.suffix }} \
-            -t ${{ env.REPOSITORY }}:${{ matrix.os }}-minimal \
             .
 
       - name: Build (standard)
         run: |
           docker build  \
-            --file './${{ matrix.os }}/standard/Dockerfile' \
+            --file './${{ matrix.os }}/Dockerfile' \
+            --target 'standard' \
             --build-arg 'APT_UBUNTU_MIRROR=${{ env.APT_UBUNTU_MIRROR }}' \
             -t ${{ env.REPOSITORY }}:${{ matrix.os }}-standard-${{ steps.shorter_hash.outputs.hash }}-${{ matrix.suffix }} \
             -t ${{ env.REPOSITORY }}:${{ matrix.os }}-standard-${{ github.event.release.tag_name || 'latest' }}-${{ matrix.suffix }} \
             -t ${{ env.REPOSITORY }}:${{ matrix.os }}-standard-${{ matrix.suffix }} \
-            -t ${{ env.REPOSITORY }}:${{ matrix.os }}-standard \
             .
 
       - name: Build (dind)
         run: |
           docker build  \
-            --file './${{ matrix.os }}/dind/Dockerfile' \
+            --file './${{ matrix.os }}/Dockerfile' \
+            --target 'dind' \
             --build-arg 'APT_UBUNTU_MIRROR=${{ env.APT_UBUNTU_MIRROR }}' \
             -t ${{ env.REPOSITORY }}:${{ matrix.os }}-dind-${{ steps.shorter_hash.outputs.hash }}-${{ matrix.suffix }} \
             -t ${{ env.REPOSITORY }}:${{ matrix.os }}-dind-${{ github.event.release.tag_name || 'latest' }}-${{ matrix.suffix }} \
             -t ${{ env.REPOSITORY }}:${{ matrix.os }}-dind-${{ matrix.suffix }} \
-            -t ${{ env.REPOSITORY }}:${{ matrix.os }}-dind \
             .
 
       - name: Push
@@ -82,35 +88,35 @@ jobs:
     outputs:
       shorter_hash: '${{ steps.shorter_hash.outputs.hash }}'
 
-  # combine:
-  #   needs:
-  #     - build
-  #   permissions:
-  #     contents: read
-  #     packages: write
-  #   strategy:
-  #     matrix:
-  #       os:
-  #         - ubuntu-22.04
-  #         - ubuntu-22.10
-  #       variant:
-  #         - minimal
-  #         - standard
-  #         - dind
-  #   runs-on: ubuntu-22.04
-  #   steps:
-  #     - name: Log in to GHCR
-  #       run: echo "${{ github.token }}" | docker login ghcr.io -u $ --password-stdin
+  combine:
+    needs:
+      - build
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      matrix:
+        os:
+          - ubuntu-22.04
+          - ubuntu-22.10
+        variant:
+          - minimal
+          - standard
+          - dind
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Log in to GHCR
+        run: echo "${{ github.token }}" | docker login ghcr.io -u $ --password-stdin
 
-  #     - name: Determine the prefix of tags
-  #       id: tag_prefix
-  #       run: |
-  #         echo "commitish=${REPOSITORY}:${{ matrix.os }}-${{ matrix.variant }}-${{ needs.build.outputs.shorter_hash }}" >> "${GITHUB_OUTPUT}"
-  #         echo "versioned=${REPOSITORY}:${{ matrix.os }}-${{ matrix.variant }}-${{ github.event.release.tag_name || 'latest' }}" >> "${GITHUB_OUTPUT}"
+      - name: Determine the prefix of tags
+        id: tag_prefix
+        run: |
+          echo "commitish=${REPOSITORY}:${{ matrix.os }}-${{ matrix.variant }}-${{ needs.build.outputs.shorter_hash }}" >> "${GITHUB_OUTPUT}"
+          echo "versioned=${REPOSITORY}:${{ matrix.os }}-${{ matrix.variant }}-${{ github.event.release.tag_name || 'latest' }}" >> "${GITHUB_OUTPUT}"
 
-  #     - name: Create and push multi-arch image manifests
-  #       run: |
-  #         for TAG in '${{ steps.tag_prefix.outputs.commitish }}' '${{ steps.tag_prefix.outputs.versioned }}'; do
-  #           docker manifest create "${TAG}" --amend "${TAG}-amd64" --amend "${TAG}-arm64"
-  #           docker manifest push "${TAG}"
-  #         done
+      - name: Create and push multi-arch image manifests
+        run: |
+          for TAG in '${{ steps.tag_prefix.outputs.commitish }}' '${{ steps.tag_prefix.outputs.versioned }}'; do
+            docker manifest create "${TAG}" --amend "${TAG}-amd64" --amend "${TAG}-arm64"
+            docker manifest push "${TAG}"
+          done
