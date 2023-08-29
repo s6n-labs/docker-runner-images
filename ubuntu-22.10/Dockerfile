@@ -1,7 +1,6 @@
 FROM ubuntu:kinetic-20230412 AS minimal
 
 ARG APT_UBUNTU_MIRROR="http://ports.ubuntu.com/ubuntu-ports/"
-ARG ACTIONS_RUNNER_VERSION="2.304.0"
 
 RUN apt-get -y update && apt-get -y install ca-certificates
 RUN sed -i "s http://ports.ubuntu.com/ubuntu-ports/ ${APT_UBUNTU_MIRROR} g" /etc/apt/sources.list
