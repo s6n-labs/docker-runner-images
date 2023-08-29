@@ -3,7 +3,7 @@
 ## Usage
 
 ```shell
-docker run ghcr.io/s6n-jp/docker-runner-images:ubuntu-22.04-standard \
+docker run ghcr.io/s6n-labs/docker-runner-images:ubuntu-22.04-standard \
     --url https://github.com/<your_organisation> --token <your_token>
 ```
 
