@@ -1,4 +1,4 @@
-FROM ubuntu:kinetic-20230412 AS minimal
+FROM ubuntu:kinetic-20231128 AS minimal
 
 ARG APT_UBUNTU_MIRROR="http://ports.ubuntu.com/ubuntu-ports/"
 
