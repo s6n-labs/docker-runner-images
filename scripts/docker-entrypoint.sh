@@ -2,5 +2,5 @@
 
 set -eux
 
-./config.sh --unattended $@
+./config.sh --unattended --disableupdate $@
 ./run.sh
