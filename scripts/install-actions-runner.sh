@@ -2,15 +2,15 @@
 
 set -eux
 
-ACTIONS_RUNNER_VERSION="2.308.0"
+ACTIONS_RUNNER_VERSION="2.311.0"
 ARCH="$(uname -m)"
 
 if [ $ARCH = "aarch64" ]; then
     ARCH_SHORT="arm64"
-    ARCHIVE_CHECKSUM="e39b3137fcaad3262e1def26d3e42cdd810c831a3c836deeb560a2266338b503"
+    ARCHIVE_CHECKSUM="5d13b77e0aa5306b6c03e234ad1da4d9c6aa7831d26fd7e37a3656e77153611e"
 elif [ $ARCH = "x86_64" ]; then
     ARCH_SHORT="x64"
-    ARCHIVE_CHECKSUM="9f994158d49c5af39f57a65bf1438cbae4968aec1e4fec132dd7992ad57c74fa"
+    ARCHIVE_CHECKSUM="29fc8cf2dab4c195bb147384e7e2c94cfd4d4022c793b346a6175435265aa278"
 else
     echo "This platform is not supported."
     exit 1
