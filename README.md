@@ -26,9 +26,9 @@ GitHub Actions Runner and their dependencies only
   - cmake
 - .NET SDK (stable)
 - Go (stable)
-- Temurin JDK v17
-- Node.js v18
-- PHP v8.2
+- Temurin JDK v21
+- Node.js v20
+- PHP v8.3
 - Python v3
 - Rust (stable)
 - Misc
@@ -46,7 +46,7 @@ GitHub Actions Runner and their dependencies only
   - Docker Compose Plugin
 
 
-### Ubuntu 22.10 (kinetic)
+### Ubuntu 23.04 (lunar)
 
 #### Minimal
 
@@ -62,9 +62,9 @@ GitHub Actions Runner and their dependencies only
   - cmake
 - .NET SDK (stable)
 - Go (stable)
-- Temurin JDK v17
-- Node.js v18
-- ~~PHP v8.2~~ (ondrej/php does not support kinetic yet)
+- ~~Temurin JDK v21~~ (Official APT repository does not support lunar yet)
+- Node.js v20
+- ~~PHP v8.3~~ (ondrej/php does not support lunar yet)
 - Python v3
 - Rust (stable)
 - Misc

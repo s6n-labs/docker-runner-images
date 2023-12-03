@@ -33,18 +33,20 @@ RUN apt-get -y update && apt-get -y install software-properties-common && \
 
 # GPG keys
 RUN mkdir -p /etc/apt/keyrings && \
-    curl -sSL https://packages.adoptium.net/artifactory/api/gpg/key/public > /etc/apt/keyrings/adoptium.asc
+    curl -sSL https://packages.adoptium.net/artifactory/api/gpg/key/public > /etc/apt/keyrings/adoptium.asc && \
+    curl -sSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key > /etc/apt/keyrings/nodesource.asc
 
 # APT repositories
 RUN echo "deb [signed-by=/etc/apt/keyrings/adoptium.asc] https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" > /etc/apt/sources.list.d/adoptium.list
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.asc] https://deb.nodesource.com/node_20.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
 
 # APT packages
 RUN apt-get -y update && \
     DEBIAN_FRONTEND="noninteractive" apt-get -y install \
         autoconf automake build-essential cmake jq wget \
-        golang-go nodejs php8.2-fpm \
-        python3 python3-pip python3-venv
+        golang-go nodejs php8.3-fpm \
+        python3 python3-pip python3-venv \
+        temurin-21-jdk
 
 # .NET
 RUN wget https://dot.net/v1/dotnet-install.sh -O /tmp/dotnet-install.sh && \
