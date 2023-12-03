@@ -1,4 +1,4 @@
-FROM ubuntu:kinetic-20231128 AS minimal
+FROM ubuntu:lunar-20231128 AS minimal
 
 ARG APT_UBUNTU_MIRROR="http://ports.ubuntu.com/ubuntu-ports/"
 
@@ -29,7 +29,7 @@ USER root
 # PPA repositories
 RUN apt-get -y update && apt-get -y install software-properties-common && \
     add-apt-repository ppa:longsleep/golang-backports
-    # PHP: ondrej/php does not support kinetic yet
+    # PHP: ondrej/php does not support lunar yet
     # add-apt-repository ppa:ondrej/php
 
 # GPG keys
