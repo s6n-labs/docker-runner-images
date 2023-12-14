@@ -28,13 +28,13 @@ jobs:
         include:
           - architecture: ARM64
             platforms: linux/arm64/v8
-            runner: '["self-hosted", "Linux", "ARM64"]'
+            runner: buildjet-4vcpu-ubuntu-2204-arm
             suffix: arm64
           - architecture: X64
             platforms: linux/amd64
-            runner: '"ubuntu-22.04"'
+            runner: buildjet-4vcpu-ubuntu-2204
             suffix: amd64
-    runs-on: ${{ fromJSON(matrix.runner) }}
+    runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@v3
 
