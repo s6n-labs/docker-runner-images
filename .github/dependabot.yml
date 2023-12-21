@@ -1,0 +1,12 @@
+# https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+version: 2
+updates:
+  - package-ecosystem: docker
+    directory: "ubuntu-22.04"
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: docker
+    directory: "ubuntu-23.04"
+    schedule:
+      interval: weekly
