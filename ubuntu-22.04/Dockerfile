@@ -1,4 +1,4 @@
-FROM ubuntu:jammy-20231128 AS minimal
+FROM ubuntu:jammy-20240227 AS minimal
 
 ARG APT_UBUNTU_MIRROR="http://ports.ubuntu.com/ubuntu-ports/"
 
